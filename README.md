@@ -1,6 +1,6 @@
 # Web Workers Demo
 
-This project demonstrates how to use Web Workers in a React application to handle heavy computations without blocking the main UI thread.
+How to use Web Workers in React to handle heavy computations without blocking the main UI thread.
 
 ## Why Use Web Workers?
 
