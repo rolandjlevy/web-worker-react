@@ -1,0 +1,5 @@
+* linguist-vendored
+src/** linguist-vendored=false
+public/** linguist-vendored
+build/** linguist-generated=true
+dist/** linguist-generated=true
