@@ -5,7 +5,6 @@ export function useWorker(workerUrl) {
   const [result, setResult] = useState(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState(null);
-  const [initError, setInitError] = useState(null);
 
   useEffect(() => {
     try {
@@ -16,20 +15,19 @@ export function useWorker(workerUrl) {
       workerRef.current.onmessage = (event) => {
         const { result, error } = event.data;
         setRunning(false);
-        if (error) setError(error);
-        else setResult(result);
+        if (error) {
+          setError(error);
+        } else {
+          setResult(result);
+        }
       };
       workerRef.current.onerror = (e) => {
         setRunning(false);
-        setInitError('Worker failed to load: ' + e.message);
         setError('Worker failed to load: ' + e.message);
-        console.error('Worker error:', e);
       };
     } catch (e) {
-      setInitError(e.message);
       setError(e.message);
       setRunning(false);
-      console.error('Worker initialization error:', e);
     }
     return () => workerRef.current && workerRef.current.terminate();
   }, [workerUrl]);
@@ -37,10 +35,6 @@ export function useWorker(workerUrl) {
   const run = (fn, payload) => {
     setError(null);
     setResult(null);
-    if (initError) {
-      setRunning(false);
-      return;
-    }
     setRunning(true);
     try {
       workerRef.current.postMessage({
@@ -50,9 +44,8 @@ export function useWorker(workerUrl) {
     } catch (e) {
       setRunning(false);
       setError('Failed to post message to worker: ' + e.message);
-      console.error('Failed to post message to worker:', e);
     }
   };
 
-  return { run, result, running, error: error || initError };
+  return { run, result, running, error };
 }
